@@ -5,6 +5,7 @@ import cucumber.api.java.en.Then;
 import io.qameta.allure.Step;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -64,6 +65,41 @@ public class MyStepdefs {
 
     @Then("закончить проверку поисковой выдачи Яндекса")
     public void закончитьПроверкуПоисковойВыдачиЯндекса() {
+        закрытьБраузер();
+    }
+
+    @Given("перейти на сайт Google '(.*)'")
+    public void перейтиНаСайтGoogle (String site) {
+        открытьБраузер();
+        chromeDriver.get(site);
+    }
+
+    @Then("найти в Google слово '(.*)'")
+    public void найтиВGoogleСлово (String word) {
+
+        WebElement searchField = chromeDriver.findElement(By.xpath("//input[@class=\'gLFyf gsfi\']"));
+
+        searchField.click();
+        searchField.sendKeys(word);
+        searchField.sendKeys(Keys.ENTER);
+    }
+
+    @Then("в выдаче Google есть ссылка на '(.*)'")
+    public void вВыдачеGoogleЕстьСсылкаНа (String siteToFind) {
+
+        List<WebElement> SearchResultOpen = chromeDriver.findElements(By.xpath("//div[@class=\"TbwUpd NJjxre\"]//cite"));
+
+        Boolean hasOpenLink = false;
+        for (WebElement webElement : SearchResultOpen) {
+            if (webElement.getText().equals(siteToFind)) {
+                hasOpenLink = true;
+            }
+        }
+        Assert.assertTrue(hasOpenLink);
+    }
+
+    @Then("закончить проверку поисковой выдачи Google")
+    public void закончитьПроверкуПоисковойВыдачиGoogle() {
         закрытьБраузер();
     }
 }
